@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Courses</h1>
+
+<!-- For the Prof account, display all courses with add course functionality -->
+{% if user.username == 'prof' %}
+    <h2>All Courses</h2>
+    <ul>
+        {% for course in courses %}
+        <li>
+            {{ course.title }} - {{ course.description }}
+            <!-- Option for adding new course (only available for the 'prof' account) -->
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_course' %}"><button>Add New Course</button></a>
+{% endif %}
+
+<!-- For logged-in students, display all courses with register/unregister functionality -->
+{% if user.is_authenticated and user.username != 'prof' %}
+    <h2>All Courses</h2>
+    <ul>
+        {% for course in courses %}
+        <li>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                <span>{{ course.title }} - {{ course.description }}</span>
+                {% if user in course.students.all %}
+                <!-- Unregister Button -->
+                <form method="POST" action="{% url 'unregister_course' course.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit">Unregister</button>
+                </form>
+                {% else %}
+                <!-- Register Button -->
+                <form method="POST" action="{% url 'register_course' course.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit">Register</button>
+                </form>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- For logged-in students, show the "My Courses" section with the registered courses and their assignments -->
+{% if user.is_authenticated and user.username != 'prof' %}
+    <h2>My Courses</h2>
+    {% if my_courses %}
+        <ul>
+            {% for course in my_courses %}
+            <li>
+                {{ course.title }} - {{ course.description }}
+                <!-- Displaying assignments for the student -->
+                <ul>
+                    {% for assignment in course.assignments.all %}
+                    <li><strong>{{ assignment.title }}</strong> - Due Date: {{ assignment.due_date }}</li>
+                    {% empty %}
+                    <li>No assignments for this course.</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not registered for any courses.</p>
+    {% endif %}
+{% endif %}
+{% endblock %}
