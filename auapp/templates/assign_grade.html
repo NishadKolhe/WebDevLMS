@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Assign Grade</h1>
+  <p>Assign grade for {{ student.username }} on assignment: {{ assignment.title }}</p>
+  
+  <form method="POST">
+    {% csrf_token %}
+    <label for="grade">Grade:</label>
+    <input type="number" name="grade" min="1" max="10" required>
+    <button type="submit">Assign Grade</button>
+  </form>
+{% endblock %}
