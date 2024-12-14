@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Grades</h1>
+
+<!-- For Student Account -->
+{% if not is_prof %}
+    <div style="text-align: right;">
+        <h2>Your Overall Grade: {{ overall_grade|default:"Not Available" }}</h2>
+    </div>
+
+    <ul>
+        {% for assignment in assignments %}
+        <li>
+            <strong>{{ assignment.title }}</strong>
+            <span style="float: right;">
+                {% for grade in grades %}
+                    {% if grade.assignment.id == assignment.id %}
+                        Grade: {{ grade.marks }}
+                    {% endif %}
+                {% empty %}
+                    Yet to be graded
+                {% endfor %}
+            </span>
+        </li>
+        {% empty %}
+        <p>No assignments available.</p>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- For Prof Account -->
+{% if is_prof %}
+    <h2>Grade Students</h2>
+    <ul>
+        {% for student, assignments in student_assignments.items %}
+        <li>
+            <strong>{{ student.username }}</strong>
+            <ul>
+                {% for assignment in assignments %}
+                <li>
+                    <strong>{{ assignment.title }}</strong>
+                    <form method="POST" action="{% url 'assign_grade' assignment.id student.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="grade" min="1" max="10" required>
+                        <button type="submit">Submit</button>
+                    </form>
+                </li>
+                {% empty %}
+                <li>No assignments for this student.</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% empty %}
+        <p>No students registered for courses yet.</p>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Comments for "{{ post.title }}"</h1>
+
+    {% if comments %}
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {{ comment.content }} - <em>by {{ comment.author.username }}</em>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No comments yet.</p>
+    {% endif %}
+
+    <h2>Post a Comment</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <textarea name="content" placeholder="Write your comment here" required></textarea><br>
+        <button type="submit">Post Comment</button>
+    </form>
+{% endblock %}
