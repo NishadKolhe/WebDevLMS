@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Add a New Course and Assignments</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <h3>Course Details</h3>
+        {{ course_form.as_p }}
+
+        <h3>Assignments</h3>
+        {{ assignment_form_1.as_p }}
+        {{ assignment_form_2.as_p }}
+        {{ assignment_form_3.as_p }}
+        
+        <button type="submit">Add Course and Assignments</button>
+    </form>
+{% endblock %}
