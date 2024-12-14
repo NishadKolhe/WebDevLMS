@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Settings</h1>
+<form method="POST">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="New Username" required />
+    <input type="submit" value="Update Name" />
+</form>
+{% endblock %}
